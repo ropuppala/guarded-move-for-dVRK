@@ -11,12 +11,12 @@ class guarded_move(arm):
         self._arm__init_arm(guarded_name, ros_namespace)
 
     def guarded_move_cartesian_translation(self, guarded_translation):
-        a = joy_force()
-        self.delta_guarded_move_cartesian_translation(guarded_translation, a)
+        force = joy_force()
+        self._delta_guarded_move_cartesian_translation(guarded_translation, force)
 
-    def delta_guarded_move_cartesian_translation(self, guarded_translation, joy_force):
+    def _delta_guarded_move_cartesian_translation(self, guarded_translation, force):
         i = 0
-        while (joy_force.zero_force() and i < 100):
+        while (force.zero_force() and i < 100):
             #new_x = guarded_translation[0]/100
             #new_y = guarded_translation[1]/100
             #new_z = guarded_translation[2]/100
