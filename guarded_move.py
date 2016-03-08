@@ -19,17 +19,16 @@ class guarded_move(arm):
         new_x = 0
         new_y = 0
         new_z = 0
-        delta_x = guarded_translation[0]/100
-        delta_y = guarded_translation[1]/100
-        delta_z = guarded_translation[2]/100
+        delta_x = guarded_translation[0]/1000
+        delta_y = guarded_translation[1]/1000
+        delta_z = guarded_translation[2]/1000
 
-        while (force.zero_force() and i < 20):
+        while (force.zero_force() and i < 100):
             new_x = delta_x + new_x
             new_y = delta_y + new_y
             new_z = delta_z + new_z
 
             self.delta_move_cartesian_translation([new_x, new_y, new_z])
-            print "here" , i
             i = i + 1
-            time.sleep (0.5)
+            #time.sleep (0.01)
         print "Found :", self.get_current_joint_position()
