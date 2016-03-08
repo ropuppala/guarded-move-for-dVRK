@@ -51,11 +51,6 @@ class calibration_testing:
             #move based on mouse position
             self._robot.delta_move_cartesian_translation([y, -x, z], False)
             if self.mouse_buttons()[0] == 1 and self.previous_mouse_buttons[0] == 0:
-                #record data
-                #recorded_cartesian_positions.append(list(self._robot.get_current_cartesian_position().p)[:])
-                #recorded_joint_positions.append(list(self._robot.get_current_joint_position())[:])
-                #print recorded_cartesian_positions[sample_nb]
-                #calculate next joint position
                 shaft_remainder = sample_nb % (density ** 2)
                 shaft_index = (sample_nb - shaft_remainder) / (density ** 2)
                 finger_index = shaft_remainder % density
