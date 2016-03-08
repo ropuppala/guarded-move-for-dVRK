@@ -17,6 +17,6 @@ class joy_force():
         if (self._f_x == 0.0 and self._f_y == 0.0 and self.previous == 0):
             return True
         else:
-            self.previous = False
+            self.previous = 1
             print 'out'
             return False
