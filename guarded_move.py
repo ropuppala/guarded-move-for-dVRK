@@ -1,5 +1,6 @@
 from dvrk.psm import *
 from joy_force import *
+import time
 
 class guarded_move(arm):
     """Simple robot API wrapping around ROS messages
@@ -11,12 +12,16 @@ class guarded_move(arm):
 
     def guarded_move_cartesian_translation(self, guarded_translation):
         a = joy_force()
+        self.delta_guarded_move_cartesian_translation(guarded_translation, a)
+
+    def delta_guarded_move_cartesian_translation(self, guarded_translation, joy_force):
         i = 0
-        while (a.zero_force() and i < 100):
+        while (joy_force.zero_force() and i < 100):
             #new_x = guarded_translation[0]/100
             #new_y = guarded_translation[1]/100
             #new_z = guarded_translation[2]/100
             #self.delta_move_cartesian(new_x, new_y, new_z)
-            print "here"
+            print "here" , i
             i = i +1
+            time.sleep (1)
         print "done"#self.get_current_joint_position()
