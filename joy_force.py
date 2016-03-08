@@ -15,8 +15,6 @@ class joy_force():
         self._f_y = data.force.y
     
     def zero_force (self):
-        print 'x', self._f_x
-        print 'y' , self._f_y
         #global previous
         if (self.previous == 0):
             if(not self._f_x == 0.0 or not self._f_y == 0.0):
