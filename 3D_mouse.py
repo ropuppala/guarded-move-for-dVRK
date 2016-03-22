@@ -7,7 +7,7 @@ import random
 import csv
 import math
 
-class calibration_testing:
+class controller_move:
 
     def __init__(self, robotName):
         self._robot_name = robotName
@@ -17,7 +17,6 @@ class calibration_testing:
         self.previous_mouse_buttons = [0, 0]
         rospy.Subscriber('/spacenav/joy', Joy, self.joy_callback)
         
-
     def joy_callback(self, data):
         self._last_axes[:] = data.axes
         self._last_buttons[:] = data.buttons
@@ -28,37 +27,39 @@ class calibration_testing:
     def mouse_buttons(self):
         return self._last_buttons
     
-    def run(self):
-        #d2r = math.pi / 180
-        #recorded_joint_positions = []
-        #recorded_cartesian_positions = []
-        sample_nb = 0
+    def move(self):
         acceleration_counter = 1.0
-        #range_of_motion = [ [-40 * d2r, 40 * d2r], [-40 * d2r, 40 * d2r], [-40 * d2r, 40 * d2r]]
-        density = 3
-        #joint_motions = [ 0, 0, 0]
-        #joint_indexs = [ 0, 0, 0]
-        
-        while sample_nb < ((density ** 3) + 1):
+        gripper_closed = True
+
+        #move to the starting point
+        self._robot.move_joint_list([0.0,0.0,0.1,0.0,0.0,0.0,0.0],[0,1,2,3,4,5,6])
+
+        while True:
             if self._last_axes[0] != 0 or self._last_axes[1] != 0 or self._last_axes[2] != 0:
                 acceleration_counter += 0.03
             else:
                 acceleration_counter = 1.0
-            scale = acceleration_counter / 5000.0
+            scale = acceleration_counter / 3000.0
             x = self._last_axes[0] * scale
             y = self._last_axes[1] * scale
             z = self._last_axes[2] * scale
-            #move based on mouse position
+
+            #move based on current position
             self._robot.delta_move_cartesian_translation([y, -x, z], False)
+
+            #if mouse button 1 is clicked print current position
             if self.mouse_buttons()[0] == 1 and self.previous_mouse_buttons[0] == 0:
-                print 'Current: ', self._robot.get_current_cartesian_position()
+                print 'Current Position : ', self._robot.get_current_cartesian_position().p
+
+            #if mouse button 2 is clicked open and close gripper
             if self.mouse_buttons()[1] == 1 and self.previous_mouse_buttons[1] == 0:
-                #if (self._robot.get_current_joint_position()[6] >= (35 * math.pi / 180)):
-                self._robot.open_jaw()
-                #else:
-            if self.mouse_buttons()[1] == 1 and self.previous_mouse_buttons[1] == 1:
-                    self._robot.close_jaw()
-           
+                if gripper_closed == True:
+                    self._robot.move_joint_list([1.0],[6])
+                    gripper_closed = False
+                elif gripper_closed == False:
+                    self._robot.move_joint_list([0.0],[6])
+                    gripper_closed = True
+
             self.previous_mouse_buttons[:] = self.mouse_buttons()
             time.sleep(0.03) # 0.03 is 30 ms, which is the spacenav's highest output frequency
 
@@ -66,5 +67,5 @@ if (len(sys.argv) != 2):
     print sys.argv[0] + ' requires one argument, i.e. name of dVRK arm'
 else:
     robotName = sys.argv[1]
-    app = calibration_testing(robotName)
-    app.run()
+    app = controller_move(robotName)
+    app.move()
