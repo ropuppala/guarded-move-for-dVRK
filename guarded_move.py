@@ -9,7 +9,7 @@ class guarded_move(arm):
         # first call base class constructor
         self._arm__init_arm(guarded_name, ros_namespace)
 
-    def delta_guarded_move_cartesian_translation(self, guarded_translation, force_class):
+    def delta_guarded_move_cartesian_translation(self, guarded_translation, condition_method):
         #intitalizing and declaring variables needed
         velocity = 0.001 #m/s^2
         rate = 20 #rate Hertz
@@ -22,7 +22,7 @@ class guarded_move(arm):
 
         #keep going until force is no longer zero, if force is no longer
         #zero
-        while (force_class.zero_force()):
+        while (condition_method()):
             new_x = delta_x + new_x
             new_y = delta_y + new_y
             new_z = delta_z + new_z
