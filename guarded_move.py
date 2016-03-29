@@ -11,21 +11,22 @@ class guarded_move(arm):
 
     def delta_guarded_move_cartesian_translation(self, guarded_translation, condition_method):
         #intitalizing and declaring variables needed
-        velocity = 0.001 #m/s^2
-        rate = 20 #rate Hertz
-        delta_x = (velocity * guarded_translation[0])/rate 
-        delta_y = (velocity * guarded_translation[1])/rate 
-        delta_z = (velocity * guarded_translation[2])/rate
-        new_x = 0
-        new_y = 0
-        new_z = 0
-
+        velocity = 0.0001 #m/s^2
+        rate = 50  #rate Hertz
+        displacement = math.sqrt(math.pow(guarded_translation[0],2) + math.pow(guarded_translation[1],2)
+                                 +math.pow(guarded_translation[2],2))
+        total_time = displacement / velocity
+        nb_points = total_time / rate
+        delta_x = guarded_translation[0] / nb_points 
+        delta_y = guarded_translation[1] / nb_points
+        delta_z = guarded_translation[2] / nb_points
         #keep going until force is no longer zero, if force is no longer
         #zero
-        while (condition_method()):
-            new_x = delta_x + new_x
-            new_y = delta_y + new_y
-            new_z = delta_z + new_z
-
-            self.delta_move_cartesian_translation([new_x, new_y, new_z])
-        print "Found at Position : ", self.get_current_cartesian_position().p
+        i = 0
+        while (condition_method() and i < nb_points):
+            self.delta_move_cartesian_translation([delta_x, delta_y, delta_z])
+            i = i+1
+        if (i < nb_points):
+            print "Found at Position : ", self.get_current_cartesian_position().p
+        else:
+            print "NOT Found at Position : ", self.get_current_cartesian_position().p
