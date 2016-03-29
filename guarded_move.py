@@ -11,12 +11,14 @@ class guarded_move(arm):
 
     def delta_guarded_move_cartesian_translation(self, guarded_translation, force_class):
         #intitalizing and declaring variables needed
+        velocity = 0.001 #m/s^2
+        rate = 20 #rate Hertz
+        delta_x = (velocity * guarded_translation[0])/rate 
+        delta_y = (velocity * guarded_translation[1])/rate 
+        delta_z = (velocity * guarded_translation[2])/rate
         new_x = 0
         new_y = 0
         new_z = 0
-        delta_x = guarded_translation[0]/1000
-        delta_y = guarded_translation[1]/1000
-        delta_z = guarded_translation[2]/1000
 
         #keep going until force is no longer zero, if force is no longer
         #zero
