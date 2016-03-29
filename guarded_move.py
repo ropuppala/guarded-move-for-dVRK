@@ -11,8 +11,8 @@ class guarded_move(arm):
 
     def delta_guarded_move_cartesian_translation(self, guarded_translation, condition_method):
         #intitalizing and declaring variables needed
-        velocity = 0.0001 #m/s^2
-        rate = 50  #rate Hertz
+        velocity = 0.00001 #m/s
+        rate = 100  #rate in Hertz
         displacement = math.sqrt(math.pow(guarded_translation[0],2) + math.pow(guarded_translation[1],2)
                                  +math.pow(guarded_translation[2],2))
         total_time = displacement / velocity
@@ -27,6 +27,6 @@ class guarded_move(arm):
             self.delta_move_cartesian_translation([delta_x, delta_y, delta_z])
             i = i+1
         if (i < nb_points):
-            print "Found at Position : ", self.get_current_cartesian_position().p
+            print "Found at Position : ", self.get_desired_cartesian_position().p
         else:
-            print "NOT Found at Position : ", self.get_current_cartesian_position().p
+            print "NOT Found at Position : ", self.get_desired_cartesian_position().p
