@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#read in from a logitech gamepad F310
 import rospy
 from geometry_msgs.msg import Wrench
 from sensor_msgs.msg import Joy
