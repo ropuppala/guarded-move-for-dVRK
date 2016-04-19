@@ -1,5 +1,5 @@
 from guarded_move import *
-from joy_condition import *
+from force_sensor import *
 
 # run rosnode spacenav_node spacenav_node - to connect controller
 # run rosrun joy joy_node - to connect sensor
@@ -10,22 +10,24 @@ if (len(sys.argv) != 2):
 else:
     robotName = sys.argv[1]
     r = guarded_move(robotName)
-    r.home()
-    r.move_cartesian_translation([0.0,0.0,-0.1])
-    print "Start at Position : ", r.get_desired_cartesian_position().p
-    time.sleep(1)
+    r.move(Vector(0.0,0.0,-0.1))
+    print "Start at Position : ", r.get_desired_position().p
+
+    goal_trans = Vector(0.01,0.05,0.0)
+    goal_rot = Rotation.Identity()
+    goal = Frame(goal_rot, goal_trans)
+    sensor = force_sensor()
+    time.sleep(0.5)
     
-    A = Vector(0.01,0.05,0.0)
-    B = Rotation.Identity()
-    move = Frame(B,A)
-    if (r.guarded_move_cartesian_frame(move, joy_condition().zero_force)):
-        print "Found : ", r.get_desired_cartesian_position().p
-        time.sleep(1)
-        next = Vector(0.01,0.0,0.0)
-        r.guarded_move_cartesian_translation(next, joy_condition().zero_force)
+    if (not r.guarded_dmove_frame(goal, sensor.zero_force)):
+       print "Did not reach goal 1, guard triggered : ", r.get_desired_position().p
+       
+       goal2_trans = Vector(-0.01,-0.05,0.0)
+       goal2_rot = Rotation.Identity()
+       goal2 = Frame(goal2_rot, goal2_trans)
+       if (not r.guarded_dmove_frame(goal2, sensor.not_zero_force)):
+           print "Did not reach goal 2, guard triggered : ", r.get_desired_position().p
+       else:
+           print "Reached goal 2: ", r.get_desired_position().p
     else:
-        print "Not Found : ", r.get_desired_cartesian_position().p
-        time.sleep(1)
-        third = [0.0,-0.01,0.0]
-        r.guarded_move_cartesian_translation(third, joy_condition().zero_force)
-        print "Done : ", r.get_desired_cartesian_position().p
+        print "Reached goal 1: ", r.get_desired_position().p
